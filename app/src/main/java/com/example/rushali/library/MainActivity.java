@@ -86,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    public static void change()
+    public void change()
     {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.context).edit();
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
         editor.putBoolean("logout",false);
         editor.apply();
     }

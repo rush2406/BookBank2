@@ -127,7 +127,10 @@ public class Sign extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        finish();
+        Intent intent = new Intent(Sign.this,AccountActivity.class);
+        intent.putExtra("name",_nameText.getText());
+        intent.putExtra("userid",_regnoText.getText());
+        startActivity(intent);
     }
 
     public void onSignupFailed() {

@@ -2,8 +2,10 @@ package com.example.rushali.library;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +22,7 @@ import com.example.rushali.library.data.UserDbHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Login extends AppCompatActivity {
+public class Login extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
@@ -38,6 +40,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+        setLogin();
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -68,7 +72,7 @@ public class Login extends AppCompatActivity {
             return;
         }
 
-        _loginButton.setEnabled(false);
+       // _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(Login.this,
                 R.style.AppTheme_Dark_Dialog);
@@ -94,12 +98,13 @@ public class Login extends AppCompatActivity {
 
         }
         if(email.equals("admin@gmail.com")&&password.equals("admin2406")) {
+            final Intent i =new Intent(Login.this,MainActivity.class);
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            MainActivity.change();
+
                             // On complete call either onLoginSuccess or onLoginFailed
-                            onLoginSuccess();
+                            startActivity(i);
                             // onLoginFailed();
                             progressDialog.dismiss();
 
@@ -116,6 +121,7 @@ public class Login extends AppCompatActivity {
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
+                            change();
                             startActivity(i);
                             progressDialog.dismiss();
 
@@ -129,7 +135,7 @@ public class Login extends AppCompatActivity {
                     new Runnable() {
                         public void run() {
                             // On complete call either onLoginSuccess or onLoginFailed
-                            onLoginFailed();
+
                             // onLoginFailed();
                             progressDialog.dismiss();
                         }
@@ -147,7 +153,7 @@ public class Login extends AppCompatActivity {
 
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
-                this.finish();
+                //this.finish();
             }
         }
     }
@@ -160,7 +166,7 @@ public class Login extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        NavUtils.navigateUpFromSameTask(this);
+//        NavUtils.navigateUpFromSameTask(this);
     }
 
     public void onLoginFailed() {
@@ -190,5 +196,34 @@ public class Login extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    void change()
+    {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(Login.this).edit();
+        editor.putBoolean("logout",false);
+        editor.apply();
+    }
+
+    void setLogin()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        if(preferences.getBoolean("logout",true))
+        {   change();
+            Intent intent = new Intent(this, Login.class);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        setLogin();
     }
 }

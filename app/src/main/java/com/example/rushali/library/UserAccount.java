@@ -15,23 +15,53 @@ import com.example.rushali.library.data.BookContract;
 import com.example.rushali.library.data.UserContract;
 import com.example.rushali.library.data.UserDbHelper;
 
-public class UserAccount extends AppCompatActivity{
-
+public class UserAccount extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+    TextView name,issue,res,fine,mail;
+    String[] proj={
+            UserContract.UserEntry._ID,
+            UserContract.UserEntry.COLUMN_NAME,
+            UserContract.UserEntry.COLUMN_UID,
+            UserContract.UserEntry.COLUMN_ISSUED,
+            UserContract.UserEntry.COLUMN_DEPT,
+            UserContract.UserEntry.COLUMN_FINE,
+            UserContract.UserEntry.COLUMN_RESERVE,
+            UserContract.UserEntry.COLUMN_EMAIL
+    };
+    public static final int LOADER_ID = 55;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_account);
 
-        TextView name = (TextView) findViewById(R.id.name);
-        TextView mail = (TextView)findViewById(R.id.mail);
-        TextView issue = (TextView)findViewById(R.id.issue);
-        TextView res = (TextView)findViewById(R.id.res);
-        TextView fine = (TextView)findViewById(R.id.fine);
+         name = (TextView) findViewById(R.id.name);
+       mail = (TextView)findViewById(R.id.mail);
+       issue = (TextView)findViewById(R.id.issue);
+       res = (TextView)findViewById(R.id.res);
+       fine = (TextView)findViewById(R.id.fine);
 
-        String sql1 = "SELECT * FROM " + UserContract.UserEntry.TABLE_NAME + " WHERE userid = ?";
+       /* String sql1 = "SELECT * FROM " + UserContract.UserEntry.TABLE_NAME + " WHERE userid = ?";
         UserDbHelper DbHelper = new UserDbHelper(getApplicationContext());
         SQLiteDatabase db1 = DbHelper.getReadableDatabase();
-        Cursor c = db1.rawQuery(sql1, new String[]{AccountActivity.uid});
+        Cursor c = db1.rawQuery(sql1, new String[]{AccountActivity.uid});*/
+        getSupportLoaderManager().initLoader(LOADER_ID,null,this);
+
+    }
+
+    @NonNull
+    @Override
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        String[] sel = {AccountActivity.uid};
+        return new CursorLoader(this,
+                UserContract.UserEntry.CONTENT_URI,
+                proj,
+                "userid=?",
+                sel,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull android.support.v4.content.Loader<Cursor> loader, Cursor c) {
+
         c.moveToFirst();
         String fname = c.getString(c.getColumnIndex(UserContract.UserEntry.COLUMN_UID));
         String email =c.getString(c.getColumnIndex(UserContract.UserEntry.COLUMN_EMAIL));
@@ -44,5 +74,10 @@ public class UserAccount extends AppCompatActivity{
         issue.setText(issued);
         fine.setText(String.valueOf(fin));
         res.setText(reserve);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull android.support.v4.content.Loader<Cursor> loader) {
+
     }
 }

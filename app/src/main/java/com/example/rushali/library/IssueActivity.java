@@ -105,8 +105,7 @@ public class IssueActivity extends AppCompatActivity {
                 UserDbHelper DbHelper = new UserDbHelper(getApplicationContext());
                 SQLiteDatabase db1 = DbHelper.getReadableDatabase();
                 Cursor c = db1.rawQuery(sql1, new String[]{uid});
-                if (c != null && c.getColumnCount() > 0) {
-                    c.moveToFirst();
+                if (c != null && c.moveToFirst()) {
                     String issue = c.getString(c.getColumnIndex(UserContract.UserEntry.COLUMN_ISSUED));
                     String reserved = c.getString(c.getColumnIndex(UserContract.UserEntry.COLUMN_RESERVE));
                     ArrayList<String> list1 = new ArrayList<>(Arrays.asList(reserved.split(" ")));

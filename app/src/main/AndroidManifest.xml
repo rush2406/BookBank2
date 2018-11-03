@@ -14,8 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:launchMode="singleTop">
+            android:name=".Login"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,13 +33,7 @@
 
         <activity android:name=".ProductDetailsActivity" />
         <activity
-            android:name=".Login"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.Dark">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
+            android:name=".MainActivity"/>
         <activity
             android:name=".Sign"
             android:theme="@style/AppTheme.Dark" />
